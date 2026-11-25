@@ -15,6 +15,9 @@ interface EmergencyCardData {
   fullName: string;
   birthDatePt: string;
   birthDateEn: string;
+  phoneDisplay: string;
+  phoneDial: string;
+  cityState: string;
   healthPlanName: string;
   healthPlanNumber: string;
   nationalityPt: string;
@@ -32,6 +35,9 @@ const EMERGENCY_CARD: EmergencyCardData = {
   fullName: 'Wellington Rodovalho Fonseca',
   birthDatePt: '29/03/1969',
   birthDateEn: 'March 29, 1969',
+  phoneDisplay: '+55 (62) 98545-1980',
+  phoneDial: '+5562985451980',
+  cityState: 'Goiânia/GO',
   healthPlanName: 'Unimed',
   healthPlanNumber: '00640924002099009',
   nationalityPt: 'Brasileira',
@@ -154,7 +160,7 @@ export const MedicalCard: React.FC = () => {
           >
             {EMERGENCY_CARD.fullName}
           </h1>
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 pt-1 text-sm text-slate-600">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 pt-1 text-sm text-slate-600">
             <span>
               {isPt ? 'Data de Nascimento:' : 'Date of Birth:'}{' '}
               <strong className="font-semibold text-slate-900 tabular-nums">{birthDate}</strong>
@@ -165,6 +171,24 @@ export const MedicalCard: React.FC = () => {
             <span>
               {isPt ? 'Nacionalidade:' : 'Nationality:'}{' '}
               <strong className="font-semibold text-slate-900">{nationality}</strong>
+            </span>
+          </div>
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm text-slate-600">
+            <span>
+              {isPt ? 'Cidade:' : 'City:'}{' '}
+              <strong className="font-semibold text-slate-900">{EMERGENCY_CARD.cityState}</strong>
+            </span>
+            <span aria-hidden="true" className="text-slate-300">
+              ·
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              {isPt ? 'Telefone:' : 'Phone:'}{' '}
+              <a
+                href={`tel:${EMERGENCY_CARD.phoneDial}`}
+                className="font-mono font-semibold text-slate-900 hover:text-red-700 underline underline-offset-4 decoration-slate-300 hover:decoration-red-600 tabular-nums transition-colors"
+              >
+                {EMERGENCY_CARD.phoneDisplay}
+              </a>
             </span>
           </div>
         </div>
