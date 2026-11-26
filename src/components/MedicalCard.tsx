@@ -11,6 +11,12 @@ interface EmergencyContact {
   whatsapp: string;
 }
 
+interface MedicationItem {
+  brand: string;
+  activeIngredientPt: string;
+  activeIngredientEn: string;
+}
+
 interface EmergencyCardData {
   fullName: string;
   birthDatePt: string;
@@ -18,6 +24,10 @@ interface EmergencyCardData {
   phoneDisplay: string;
   phoneDial: string;
   cityState: string;
+  weightPt: string;
+  weightEn: string;
+  heightPt: string;
+  heightEn: string;
   healthPlanName: string;
   healthPlanNumber: string;
   nationalityPt: string;
@@ -25,7 +35,7 @@ interface EmergencyCardData {
   allergiesPt: string;
   allergiesEn: string;
   bloodType: string;
-  medications: string[];
+  medications: MedicationItem[];
   conditionsPt: string[];
   conditionsEn: string[];
   emergencyContacts: EmergencyContact[];
@@ -38,6 +48,10 @@ const EMERGENCY_CARD: EmergencyCardData = {
   phoneDisplay: '+55 (62) 98545-1980',
   phoneDial: '+5562985451980',
   cityState: 'Goiânia/GO',
+  weightPt: '75 kg',
+  weightEn: '165 lbs',
+  heightPt: '1,65 m',
+  heightEn: `5'5"`,
   healthPlanName: 'Unimed',
   healthPlanNumber: '00640924002099009',
   nationalityPt: 'Brasileira',
@@ -45,7 +59,33 @@ const EMERGENCY_CARD: EmergencyCardData = {
   allergiesPt: 'Não',
   allergiesEn: 'None',
   bloodType: 'A+',
-  medications: ['Aradois', 'Xigduo', 'Linadib Duo', 'Selozok', 'Zynpass'],
+  medications: [
+    {
+      brand: 'Aradois',
+      activeIngredientPt: 'Losartana potássica',
+      activeIngredientEn: 'Losartan potassium',
+    },
+    {
+      brand: 'Xigduo',
+      activeIngredientPt: 'Dapagliflozina + Cloridrato de metformina',
+      activeIngredientEn: 'Dapagliflozin + Metformin HCl',
+    },
+    {
+      brand: 'Linadib Duo',
+      activeIngredientPt: 'Linagliptina + Cloridrato de metformina',
+      activeIngredientEn: 'Linagliptin + Metformin HCl',
+    },
+    {
+      brand: 'Selozok',
+      activeIngredientPt: 'Succinato de metoprolol',
+      activeIngredientEn: 'Metoprolol succinate',
+    },
+    {
+      brand: 'Zynpass',
+      activeIngredientPt: 'Rosuvastatina cálcica',
+      activeIngredientEn: 'Rosuvastatin calcium',
+    },
+  ],
   conditionsPt: ['Diabetes', 'Hipertensão', 'Cardiopatia'],
   conditionsEn: ['Diabetes', 'Hypertension', 'Heart Disease'],
   emergencyContacts: [
@@ -79,6 +119,21 @@ const EMERGENCY_CARD: EmergencyCardData = {
   ],
 };
 
+const EMERGENCY_SERVICES = {
+  brazil: [
+    { number: '192', labelPt: 'SAMU (Ambulância)', labelEn: 'SAMU (Ambulance)' },
+    { number: '193', labelPt: 'Bombeiros', labelEn: 'Fire & Rescue' },
+    { number: '190', labelPt: 'Polícia Militar', labelEn: 'Police' },
+  ],
+  usa: [
+    {
+      number: '911',
+      labelPt: 'Emergência Geral (Ambulância, Polícia e Bombeiros)',
+      labelEn: 'Emergency (Ambulance, Police & Fire)',
+    },
+  ],
+};
+
 export const MedicalCard: React.FC = () => {
   const [lang, setLang] = useState<'pt' | 'en'>('pt');
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
@@ -101,6 +156,8 @@ export const MedicalCard: React.FC = () => {
   const allergies = isPt ? EMERGENCY_CARD.allergiesPt : EMERGENCY_CARD.allergiesEn;
   const birthDate = isPt ? EMERGENCY_CARD.birthDatePt : EMERGENCY_CARD.birthDateEn;
   const nationality = isPt ? EMERGENCY_CARD.nationalityPt : EMERGENCY_CARD.nationalityEn;
+  const weight = isPt ? EMERGENCY_CARD.weightPt : EMERGENCY_CARD.weightEn;
+  const height = isPt ? EMERGENCY_CARD.heightPt : EMERGENCY_CARD.heightEn;
 
   return (
     <article
@@ -203,9 +260,9 @@ export const MedicalCard: React.FC = () => {
         </div>
       </div>
 
-      {/* Health Insurance & Drug Allergies */}
-      <div className="px-6 sm:px-8 py-6 border-b border-slate-200 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
-        <div>
+      {/* Health Insurance, Drug Allergies & Biometrics */}
+      <div className="px-6 sm:px-8 py-6 border-b border-slate-200 grid grid-cols-2 md:grid-cols-12 gap-6">
+        <div className="col-span-2 md:col-span-5">
           <p className="text-xs font-medium text-slate-500">
             {isPt
               ? `Plano de Saúde (${EMERGENCY_CARD.healthPlanName})`
@@ -230,17 +287,31 @@ export const MedicalCard: React.FC = () => {
           </div>
         </div>
 
-        <div>
+        <div className="col-span-2 sm:col-span-1 md:col-span-3">
           <p className="text-xs font-medium text-slate-500">
             {isPt ? 'Alergia a Medicamentos' : 'Drug Allergies'}
           </p>
           <p className="mt-2 text-lg sm:text-xl font-semibold text-slate-900">{allergies}</p>
         </div>
+
+        <div className="col-span-1 md:col-span-2">
+          <p className="text-xs font-medium text-slate-500">{isPt ? 'Peso' : 'Weight'}</p>
+          <p className="mt-2 text-lg sm:text-xl font-semibold text-slate-900 font-mono tabular-nums">
+            {weight}
+          </p>
+        </div>
+
+        <div className="col-span-1 md:col-span-2">
+          <p className="text-xs font-medium text-slate-500">{isPt ? 'Altura' : 'Height'}</p>
+          <p className="mt-2 text-lg sm:text-xl font-semibold text-slate-900 font-mono tabular-nums">
+            {height}
+          </p>
+        </div>
       </div>
 
-      {/* Medical Conditions & Continuous Medications */}
-      <div className="px-6 sm:px-8 py-6 border-b border-slate-200 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
-        <div>
+      {/* Medical Conditions & Continuous Medications with Active Ingredients */}
+      <div className="px-6 sm:px-8 py-6 border-b border-slate-200 grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-10">
+        <div className="md:col-span-5">
           <h2 className="text-xs font-semibold text-slate-500">
             {isPt ? 'Condições Médicas / Doenças' : 'Medical Conditions'}
           </h2>
@@ -253,14 +324,22 @@ export const MedicalCard: React.FC = () => {
           </ul>
         </div>
 
-        <div>
+        <div className="md:col-span-7">
           <h2 className="text-xs font-semibold text-slate-500">
-            {isPt ? 'Medicações de Uso Contínuo' : 'Continuous Medications'}
+            {isPt
+              ? 'Medicações de Uso Contínuo e Princípio Ativo'
+              : 'Continuous Medications & Active Ingredients'}
           </h2>
           <ul className="mt-3 divide-y divide-slate-100">
-            {EMERGENCY_CARD.medications.map((medication) => (
-              <li key={medication} className="py-2.5 text-base font-medium text-slate-800">
-                {medication}
+            {EMERGENCY_CARD.medications.map((med) => (
+              <li
+                key={med.brand}
+                className="py-2.5 flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-0.5 sm:gap-4"
+              >
+                <span className="text-base font-semibold text-slate-900 shrink-0">{med.brand}</span>
+                <span className="text-sm text-slate-600 sm:text-right">
+                  {isPt ? med.activeIngredientPt : med.activeIngredientEn}
+                </span>
               </li>
             ))}
           </ul>
@@ -268,7 +347,7 @@ export const MedicalCard: React.FC = () => {
       </div>
 
       {/* Interactive Emergency Contacts Section */}
-      <div className="px-6 sm:px-8 py-7 bg-slate-50/70">
+      <div className="px-6 sm:px-8 py-7 border-b border-slate-200 bg-slate-50/70">
         <p className="text-xs font-semibold text-red-700 mb-2">
           {isPt ? 'Contatos de Emergência' : 'Emergency Contacts'}
         </p>
@@ -339,6 +418,65 @@ export const MedicalCard: React.FC = () => {
             );
           })}
         </ul>
+      </div>
+
+      {/* Public Emergency Numbers: Brazil & USA */}
+      <div className="px-6 sm:px-8 py-6 bg-white">
+        <h2 className="text-xs font-semibold text-slate-500 mb-4">
+          {isPt
+            ? 'Telefones de Emergência — Brasil e EUA'
+            : 'Emergency Service Numbers — Brazil & USA'}
+        </h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
+          {/* Brazil */}
+          <div>
+            <p className="text-xs font-semibold text-slate-800 mb-3">
+              {isPt ? 'Brasil' : 'Brazil'}
+            </p>
+            <div className="flex flex-wrap gap-2.5">
+              {EMERGENCY_SERVICES.brazil.map((svc) => (
+                <a
+                  key={svc.number}
+                  href={`tel:${svc.number}`}
+                  className="inline-flex items-center gap-2 min-h-[44px] px-3.5 py-2 rounded-xl border border-slate-200 bg-slate-50 hover:bg-red-50 hover:border-red-200 transition-colors whitespace-nowrap shrink-0"
+                >
+                  <Phone className="w-3.5 h-3.5 text-red-600 shrink-0" />
+                  <span className="font-mono font-bold text-sm text-red-700 tabular-nums">
+                    {svc.number}
+                  </span>
+                  <span className="text-xs font-medium text-slate-700">
+                    {isPt ? svc.labelPt : svc.labelEn}
+                  </span>
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* United States */}
+          <div>
+            <p className="text-xs font-semibold text-slate-800 mb-3">
+              {isPt ? 'Estados Unidos (EUA)' : 'United States (USA)'}
+            </p>
+            <div className="flex flex-wrap gap-2.5">
+              {EMERGENCY_SERVICES.usa.map((svc) => (
+                <a
+                  key={svc.number}
+                  href={`tel:${svc.number}`}
+                  className="inline-flex items-center gap-2 min-h-[44px] px-4 py-2 rounded-xl border border-red-200 bg-red-50 hover:bg-red-100 transition-colors"
+                >
+                  <Phone className="w-3.5 h-3.5 text-red-700 shrink-0" />
+                  <span className="font-mono font-bold text-sm text-red-700 tabular-nums">
+                    {svc.number}
+                  </span>
+                  <span className="text-xs font-medium text-slate-800">
+                    {isPt ? svc.labelPt : svc.labelEn}
+                  </span>
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </article>
   );
