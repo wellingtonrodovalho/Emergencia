@@ -1,6 +1,6 @@
 {
   "name": "AlertaMed — Emergência e Monitoramento em Tempo Real",
   "description": "Página pública responsiva de emergência médica com envio de alertas SOS em tempo real, notificações push, geolocalização GPS, mapas interativos e painel administrativo.",
-  "requestFramePermissions": ["geolocation"],
+  "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
