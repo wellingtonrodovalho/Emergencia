@@ -21,6 +21,9 @@ interface EmergencyCardData {
   fullName: string;
   sexPt: string;
   sexEn: string;
+  birthYear: number;
+  birthMonth: number;
+  birthDay: number;
   birthDatePt: string;
   birthDateEn: string;
   birthPlace: string;
@@ -48,6 +51,9 @@ const EMERGENCY_CARD: EmergencyCardData = {
   fullName: 'Wellington Rodovalho Fonseca',
   sexPt: 'Masculino',
   sexEn: 'Male',
+  birthYear: 1969,
+  birthMonth: 3,
+  birthDay: 29,
   birthDatePt: '29/03/1969',
   birthDateEn: 'March 29, 1969',
   birthPlace: 'Anápolis/GO',
@@ -125,6 +131,17 @@ const EMERGENCY_CARD: EmergencyCardData = {
   ],
 };
 
+function calculateAge(year: number, month: number, day: number): number {
+  const today = new Date();
+  let age = today.getFullYear() - year;
+  const currentMonth = today.getMonth() + 1;
+  const currentDay = today.getDate();
+  if (currentMonth < month || (currentMonth === month && currentDay < day)) {
+    age -= 1;
+  }
+  return age;
+}
+
 const EMERGENCY_SERVICES = {
   brazil: [
     { number: '192', labelPt: 'SAMU', labelEn: 'SAMU (Ambulance)' },
@@ -162,20 +179,21 @@ export const MedicalCard: React.FC = () => {
   const allergies = isPt ? EMERGENCY_CARD.allergiesPt : EMERGENCY_CARD.allergiesEn;
   const sex = isPt ? EMERGENCY_CARD.sexPt : EMERGENCY_CARD.sexEn;
   const birthDate = isPt ? EMERGENCY_CARD.birthDatePt : EMERGENCY_CARD.birthDateEn;
+  const age = calculateAge(
+    EMERGENCY_CARD.birthYear,
+    EMERGENCY_CARD.birthMonth,
+    EMERGENCY_CARD.birthDay
+  );
   const nationality = isPt ? EMERGENCY_CARD.nationalityPt : EMERGENCY_CARD.nationalityEn;
   const weight = isPt ? EMERGENCY_CARD.weightPt : EMERGENCY_CARD.weightEn;
   const height = isPt ? EMERGENCY_CARD.heightPt : EMERGENCY_CARD.heightEn;
 
   return (
-    <div className="space-y-8">
-      {/* Patient Identification & Clinical Summary Card */}
-      <article
-        aria-labelledby="emergency-card-title"
-        className="w-full bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs"
-      >
-        {/* Top Clinical Header Strip */}
-        <div className="bg-red-600 text-white px-6 sm:px-8 py-4 flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
+    <>
+      {/* Fixed/Sticky Top Clinical Header Bar */}
+      <header className="sticky top-0 z-30 w-full bg-red-600 text-white shadow-sm">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2.5 min-w-0">
             <svg
               aria-hidden="true"
               viewBox="0 0 24 24"
@@ -183,7 +201,7 @@ export const MedicalCard: React.FC = () => {
             >
               <path d="M9.5 3h5v6.5H21v5h-6.5V21h-5v-6.5H3v-5h6.5V3z" />
             </svg>
-            <span className="text-sm sm:text-base font-bold tracking-tight whitespace-nowrap shrink-0">
+            <span className="text-sm sm:text-base font-bold tracking-tight truncate whitespace-nowrap">
               {isPt ? 'Cartão de Emergência' : 'Emergency Card'}
             </span>
           </div>
@@ -213,8 +231,15 @@ export const MedicalCard: React.FC = () => {
             </button>
           </div>
         </div>
+      </header>
 
-        {/* Patient Identity & Blood Type */}
+      <main className="max-w-6xl mx-auto px-4 py-6 sm:px-6 lg:px-8 lg:py-8 space-y-8">
+        {/* Patient Identification & Clinical Summary Card */}
+        <article
+          aria-labelledby="emergency-card-title"
+          className="w-full bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs"
+        >
+          {/* Patient Identity & Blood Type */}
         <div className="px-6 sm:px-8 py-6 border-b border-slate-200 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
           <div className="space-y-2">
             <p className="text-xs font-medium text-slate-500">
@@ -238,6 +263,15 @@ export const MedicalCard: React.FC = () => {
               <span>
                 {isPt ? 'Nascimento:' : 'Date of Birth:'}{' '}
                 <strong className="font-semibold text-slate-900 tabular-nums">{birthDate}</strong>
+              </span>
+              <span aria-hidden="true" className="text-slate-300">
+                ·
+              </span>
+              <span>
+                {isPt ? 'Idade:' : 'Age:'}{' '}
+                <strong className="font-semibold text-slate-900 tabular-nums">
+                  {age} {isPt ? 'anos' : 'years'}
+                </strong>
               </span>
               <span aria-hidden="true" className="text-slate-300">
                 ·
@@ -525,6 +559,7 @@ export const MedicalCard: React.FC = () => {
           </div>
         </div>
       </section>
-    </div>
+      </main>
+    </>
   );
 };
